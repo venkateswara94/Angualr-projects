@@ -1,0 +1,23 @@
+<Html>
+<body>
+  <!--<h2>Welcome to {{title}}</h2>-->
+  <h1>Routing and Navigation</h1>
+
+<!--test component : basic understanding of angular -->
+<!--<h2>data from child : <font color="red">{{message}}</font></h2>
+<app-test [parentData]="country" (childEvent)="message=$event"></app-test>-->
+<!--<div app-test></div>-->
+
+<!--employeeservice : DI and calling service method into employe-list component
+1. consume array data 2.consume the rest api with mongo data-->
+<!--<employee-list></employee-list>-->
+
+<!--<product-list></product-list>-->
+<nav>
+<a routerLink="/test" routerLinkActive="active">Test</a>&nbsp;
+<a routerLink="/employeeList" routerLinkActive="active">Employees</a>&nbsp;
+<a routerLink="/productList" routerLinkActive="active">Products</a>
+</nav>
+<router-outlet></router-outlet>
+</body>
+</Html>

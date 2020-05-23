@@ -1,0 +1,21 @@
+
+<!--two service data will be shown in sigle request with parallel call using forkjoin-->
+<!--<parallel></parallel>-->
+<!--<department-list></department-list>
+<employee-list></employee-list>-->
+
+<div style="text-align: center;">
+<h1>
+  Routing and Navigation
+</h1>
+</div>
+
+<nav>
+<a routerLink="/departments" routerLinkActive="active">Departements</a><br/>
+<a routerLink="/employees" routerLinkActive="active">Employees</a>
+</nav>
+<router-outlet></router-outlet> 
+<!--//this will help us to route the views
+//ensure the urls http://localhost:4200/departments 
+//and http://localhost:4200/employees are working.-->
+<!--routed vies goes here-->

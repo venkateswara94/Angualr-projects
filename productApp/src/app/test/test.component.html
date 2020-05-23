@@ -1,0 +1,67 @@
+<div><h3>Test template in</h3>
+    <h3>Property Binding values</h3>
+    <h2>I am {{getUser()}}  , upper case :{{name.toUpperCase()}}</h2>
+    <h2>SiteURL : {{siteUrl}}</h2></div>
+    
+    <div><input type="text" [id]="myId" value="xyz"><br/>
+    
+    <input type="text" [disabled]=isDisabled id="{{myId}}" value="xyz"><br/>
+    <input type="text" bind-disabled=isDisabled id="{{myId}}" value="xyz"><br/>
+    
+    <!--css class binding-->
+    <h2 class="text-success">Venkatesh</h2>
+    <h2 [class]="successClass">Venkatesh</h2>
+    <h2 [class.text-danger]="hasError">Venkatesh</h2>
+    <h2 [ngClass]="messageClasses">Venkatesh</h2></div>
+    
+    <!--Event binding-->
+   <h3> <button (click)="clickMethod($event)">Greet</button><!-- $event gets the dom event details-->
+    <button (click)="greeting='some test data on event'">Greet</button>
+    Event binding value : {{greeting}}</h3> 
+
+    <!-- Template Reference-->
+    <h3><input tye="text" #myInput> <button (click)="myclick(myInput.value)">click</button>
+    Template Ref value : {{tempRefVal}}</h3>
+    
+    <!--Two way binding - import @angular/forms in app.module.ts-->
+    <h3><input type="text" [(ngModel)]="bname">
+    Two way binding value : {{bname}}</h3>
+    
+   <!--Structural Directives-ngIf,ngSwith,ngFor-->
+   <!-- <h2 *ngIf="displayName; else elseBlock">Welcome to Angular</h2>-->
+    <ng-template #elseBlock><h2>Hiddent text displaying</h2></ng-template>
+
+    <h2><u>Inline if condition</u></h2>
+    <button (click)="displayName=!displayName">displayName - *ngIf {{displayName}}</button>
+    <div *ngIf="displayName; then thenBlock else elseBlock"></div>
+    <ng-template #thenBlock><h3>Display Text</h3></ng-template>
+
+    <h2><u>ngSwith</u></h2>
+    <div [ngSwitch]="color">
+    <div *ngSwitchCase="'red'"><h3>you picked RED from ngSwith</h3></div>
+    <div *ngSwitchCase="'blue'"><h3>you picked BLUE from ngSwith</h3></div>
+    <div *ngSwitchCase="'green'"><h3>you picked GREEN from ngSwith</h3></div>
+    <div *ngSwithDefault><h3>Pick Again</h3></div>
+    </div>
+    
+    <h2><u>ngFor</u></h2>
+    <div *ngFor="let color of colors;index as i;first as f">
+    <!--we can use first, last, odd, even-->
+    <h3>{{f}} {{i}} {{color}}</h3></div>
+
+    <h2><u>Pipes</u></h2>
+    <h2>LowerCase : {{name | lowercase}}</h2>
+    <h2>UpperCase : {{name | uppercase}}</h2>
+    <h2>TitleCase : {{name | titlecase}}</h2>
+    <h2>slice 3:5 : {{name | slice:3:5}}</h2>
+    <h2>Percent 0.25 : {{0.25 | percent}}</h2>
+    <h2>Currency : {{0.25 | currency}}</h2>
+    <h2>Currency GBP : {{0.25 | currency: 'GBP'}}</h2>
+    <h2>Currency EUR/Code : {{0.25 | currency: 'EUR' : 'code'}}</h2>
+    <h2>Date : {{date}}</h2>
+    <h2>DateShort : {{date | date:'short'}}</h2> <!--medium also avilable-->
+    <h2>ShortDate : {{date | date:'shortDate'}}</h2>
+    <h2>ShortTime : {{date | date:'shortTime'}}</h2>
+
+
+    <h2><u>parent and child Components communication</u></h2>
