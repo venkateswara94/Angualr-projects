@@ -1,0 +1,511 @@
+Angular application is collection of different modules(functionalties).
+
+to create new project(ex:angulat8project) in cli 
+>ng new angular8project
+
+module->component(Html+class)+services(BusinessLogic)
+
+Angular app flow:
+---------------------
+to enable cli of angular project : >npm install -g @angular/cli
+when we run the agular app, use 'ng serve' command
+1)src/app/main.ts  -->entry point of application execution
+2)app.module.ts --> root module for an application. bootstrap loads appcomponent
+3)app.component.ts --> root component of an application.
+
+building blocks of angular component:
+-------------------------------------
+component have 3 parts 
+1. Template(view+HTML) 2.class(typescript+datamethods) 3.meta-data(decorator)
+decorator - self information of a class
+ex:
+@component({
+selector : "app-root",//html tag to represent a component
+templateurl : "./app-component.html",
+styleurls : ['./app-component.css']
+})
+
+export class AppComponent{
+title='APP Title';
+}
+->to create new component(ex:test) through cli, go to project,
+project>ng g c test
+
+app-component acts as root component and other components are running under app-component.
+
+
+i.e app-module.ts will get registered(under @NgModule) all available components
+but flow is index.html (selector tag of appcomponent)->app-component.html(added selector tag of testcomponent)->test-componet.html
+
+there are 3 ways to specify the test-component inside app-component
+1.inside app-compoent.html add selector(ex: <div><app-test>/<app-test></div>) of test.component.ts
+test.component.ts looks like @Component({selector : "app-test",... })
+
+2.inside app-compoent.html add selector of test.component.ts(ex: <div class="app-test"></div>)
+test.component.ts looks like @Component({selector : ".app-test",... })
+
+3.inside app-compoent.html add selector(ex: <div app-test></div>) of test.component.ts
+test.component.ts looks like @Component({selector : "[app-test]",... })
+++++++++++++++
+->template url will tells that html resource path (ex: @component({selector :"app-test", templateurl='./testcomponent.html',...}), but if you dont want seperate file and you want to add inline html tag then, decorator  change like this @component({selector :"app-test", template='<div>test data</div>',...}). this will workfine for single inline html code, but for multiple lines of codes, use backlite quote(`) insted of single code (ex: template=`<div>
+						test data
+							<div>`)
+
+
+same to styleurl also.
+----------------------------------------------------
+Interpolation(getting dynamic value into html template): {{component class property}}
+
+ex: @Component({
+selector : 'app-test',
+template : `<h2>welcome {{name}}</h2>
+<h2>{{2+2}}</h2>
+<h2>{{"Welcome "+name}}</h2>
+<h2>{{name.length}}</h2><h2>{{name.toUpperCase()}}</h2>
+<h2>{{getUser()}}</h2><h2>{{siteUrl}}</h2>`
+})
+
+export class TestComponent {
+public name="Venkaesh";
+public siteUrl = window.location.href;
+getUser(){
+return "Hello "+this.name;
+}}
+-------------------------------------------
+Property Binding
+-----------------
+getAttribute will not change(html element initializes only once)
+ but value (or prorperty) will change i.e gets current value.
+ex: $0.getAttrubute('value') vs $0.value
+ex: <input type="text" [id]="myId" value="xyz"/>//[] brackets are good practice instead of interpolation because it supports only strings.
+i.e interpolis will not work for other than string property.
+export class TestComponent{
+public myId='MyTestId";
+}
+alternate solution : [id] is same as bind-id
+<input type="text" bind-id="myId"/>
+---------------------------------------------------------
+class Binding
+-------------
+different ways to applying styles to the html tags using classes
+ex: template:`<h2> welcome {{name}} </h2>
+<h2 class="text-success">Venkatesh</h2>
+<h2 [class]="successClass">Venkatesh</h2>
+<h2 class="text-special" [class]="sucessClass">Venkatesh</h2>
+<h2 [class.text-danger]="hasError">Venkatesh</h2>
+<h2 [ngClass]="messageClasses">Venkatesh</h2>
+`
+styles:[`
+.text-success{color: green;}
+.text-danger{color: red;}
+.text-special{font-style: italic;}`]})
+
+export class TestComponent {
+public name="Angular text";
+public successClass="text-success";
+public hasError = false;
+public isSpecial= true
+public messageClasses={
+"text-success":!this.hasError,
+"text-danger":this.hasError,
+"text-special":this.isSpecial
+}
+
+---------------------------
+Event Binding
+-------------
+Databinding with template as well class.
+ex:
+template : `<h2>Welcome {{name}}</h2>
+<button (click)="clickMethod($event)">Greet</button>
+<button (click)="greeting='some test data on event'">Greet</button>
+{{greeting}}//binding with property on event
+`
+//$event can be used get dom event details
+
+export class TestComponent{
+public name="venkatesh";
+public greeting="";
+clickMethod(event){
+console.log("welcome to Angular"+event.type);
+greeting="Greeting Text";
+}
+---------------------------------------
+Template Reference
+-------------------
+for example,on button click, pass the textfield value to the method.
+template : `<input #myInput type="text">
+<button (click)="myclick(myInput.value)">click</button>'
+export class TestComponent{
+myclick(value){
+console.log(value);//entering value into text box will shown here
+}}
+--------------------------------------
+Two way binding
+---------------
+template:`<input [(ngModle)]="name" type="text">
+//ngModel is from forms module, first import "FormModule" from '@angulr/forms'; and add this to imports array
+{{name}}`
+
+export class TestComponent{
+public name="";
+}
+------------------------------------------
+Structural directives (ngIf, ngSwith, ngFor)
+--------------------------
+template:`<h2 *ngIf="displayName; else elseBlock">welcome to angular</h2>
+<ng-template #elseBlock>
+<h2>Hidden text </h2>
+<ng-template>
+
+//inline if 
+<div *ngIf="displayName; then thenBlock else elseBlock"></div>
+<ng-template #thenBlock><h2>Display Text</h2></ng-template>
+`
+export class TestComponent{
+public displayName=true;
+}
+-----------------------------------------------
+ngSwitch
+--------
+ex:
+template:
+`<div [ngSwitch]="color">
+<div *ngSwitchCase="'red'">you picked red</div>
+<div *ngSwitchCase="'blue'">you picked blue</div>
+<div *ngSwitchCase="'yellow'">you picked yellow</div>
+<div *ngSwitchDefault>Pick Again</div>
+</div>`
+export class TestComponent{ public color="red";}
+-----------------------------------------------
+ngFor
+-----
+ex:
+template: `
+<div *ngFor="let color of colors; index as i;first as f">
+//we can use first, last, odd, even
+<h2>{{f}}{{i}}{{color}}</h2>
+</div>
+`
+export class TestComponent{ public colors=["red","blue","green"];}
+----------------------------------------------
+Component Interaction
+---------------------
+TestComponent acts as child component, AppComponent acts as parent component.
+
+below decorators are used to communicate components
+@Output() used to communicate child to parent
+@Input()  used to communicate parent to child  
+
+ex-1: Parent(AppComponent) to child(TestComponent) component
+define a variable in TestComponent 
+export class AppComponent{
+public title="Angular";
+public name="Venkatesh";
+}
+
+app.comopnent.html
+<div>welcome to {{title}}</div>
+<app-test [parentData]="name"></app-test>
+
+test.component.ts
+import {component,OnInit,Input} form '@angular/core';
+@component({
+selecter :'app-test',
+template : `
+<h2>"Hello "+{{parentData}}</h2>
+`,
+styles : []
+})
+export class TestComponent implements Oninit{
+@Input()//if variable name is diffent with parent data
+//then use @Input("parentData")public name; and change template //value to name ex: template : `<h2>"Hello "+{{name}}</h2>
+public parentData;
+}
+
+ex-2: child(TestComponent) to parent(AppComponent) component
+this will be done through event emiter.
+import{Component,OnInit, Input,Output,EventEmitter} from '@angular/core';
+@Component({selecter:app-test,template:`<h2>Some Text</h2>
+<button (click)="fireEvent()">Send Event</button>
+`})
+export class TestComponent{
+@Output()
+public childEvent = new EventEmitter();
+fireEvent(){
+this.childEvent.emit("Hello Parent, i am child");
+}}
+
+app.componet.html
+<div><h1>welecome to {{title}}</h1>
+<h2> data of child {{message}}</h2>
+</div>
+<app-test (childEvent)="message=$event" [parentData]="name"></app-test>
+
+app.component.ts
+@component({slector:'app-root',templateUrl:'app.component.html',styleUrls:['./app.component.css']})
+export class Appcomponent{
+title='app';
+public name='venkatesh';
+public message="";
+}
+---------------------------------------------------------
+Pipes
+-----
+<h2>{{name | lowercase}}</h2>
+<h2>{{name | uppercase}}</h2>
+<h2>{{name | titlecase}}</h2>
+<h2>{{name | slice:3:5}</h2>
+<h2>{{0.25 | percent}}</h2>
+<h2>{{0.25 | cuurency}}</h2>
+<h2>{{0.25 | currency: 'GBP'}}</h2>
+<h2>{{0.25 | currency: 'EUR' : 'code'}}</h2>
+<h2>{{date}}</h2>
+<h2>{{date | date:'short'}}</h2> //medium also avilable
+<h2>{{date | date:'shortDate'}}</h2>
+<h2>{{date | date:'shortTime'}}</h2>
+
+export class TestComponent{
+public name="venkaeswara";
+public date = new Date();
+}
+--------------------------------------------------------
+Service is a class with specific purpose
+--------
+advantages : share data, implement application logic, external interaction
+Dependency Injection:
+---------------------
+DI is coding pattern in which class recieves its dependencis from external sources rather than creating them itself.
+example:
+var egine = new Engine(parameter);
+var tier = new Tier(parameter);
+var car = new Car(engine,tier);
+---------------------------------------------------
+Serivce implementation:
+1.create service class(ex:EmployeeService)
+2.Register with Injector
+3.Declare as DI in emplist and empdetais.
+
+to generate service class from cli , go to 
+project folder>ng g s employee
+
+employee.service.ts
+
+import {Injectable} from '@angular/core';
+@Injectable()//this service might be injectable
+export class EmployeeService{
+constructor(){}
+ getEmployees(){
+return [{"id":1, "name":"Andew", "age":30},
+{"id":2, "name":"Brandon","age":25},
+{"id":3, "name":"Christina", "age":26},
+{"id":4, "name":"Elena", "age":28}];
+} }
+
+register employeeservice in app module to make it avaiable to other components/services to access.
+
+app.module.ts
+import.....
+import EmployeeService from './employee.service.ts';
+@NgModule(.....
+providers:[EmployeeService],..})
+export class AppModule{}
+
+provide DI in another component(ex:employee-list.component.ts) to fetch employee list from this service.
+
+import {EmployeeService} from '../employee.service';
+@component({
+selector: 'employee-list',
+template :` <h2>EmployeeList</h2>
+<ul *ngFor="let employee of employees">
+<li>{{employee.name}}</li>
+</ul>`,
+styles:[]
+})
+export class EmployeeListComponent implement OnInit{
+public employees = [];
+constructor(private _employeeservice EmployeeService){}
+ngOnInit(){
+this.employees = this._employeeservice.getData();
+}}
+
+Injectable() decorator is required in case of service(to prvide DI)
+but in Component not required. because @Component() decorator already 
+make use of Injectable.
+-----------------------------------------------------------
+Http and Observables
+--------------------
+Http Mechanism:
+
+from browser we request service with Get to webserver(ex:Http get request from employeeservice), and response can be Observable in to service (ex: recieves the observable and cast into employee array), from this service, the response can be send to the subscribed components only(ex:subscribe to the observable from EmpList and EmpDetail).
+observable, subscribe are from RxJs libraries.
+
+implementation:
+in App.module.js 
+..
+import {HttpClientModule} from '@angular/common/http';
+@NgModule({
+declarations:[AppComponent,EployeeListComponent,EmployeeDetailComponent],
+imports : [BrowserModule,HttpClientModule],
+providers : [EmployeeService],
+bootstrap: [AppComponent]
+})
+export class AppModule{}
+
+employee.service.ts
+..
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs/Observable';
+@Injectable()
+export class EmployeeService{
+private _url:string = "/assets/data/employee.json";
+constructor(private http:HttpClient){}
+getEmployee():Observable<IEmployee[]>{
+return this.http.get<IEmployee[]>(this._url);
+} }
+
+employee.ts
+
+export interface IEmployee{
+id: number,
+name: string,
+age: number
+}
+
+employee-list.component.ts
+.....
+template:`logic to iterate employees array`
+public employees=[]
+ngOnInit(){
+this._employeeService.getEmployee().
+subscribe(data=>this.employees=data);
+}
+------------------------------------------
+Http Error Handling:
+--------------------
+cath operator used to handle exceptions.
+ex:employee.service.ts
+import...
+import 'rxjs/add/opertor/catch';
+import 'rxjs/add/observable/throw';
+@Injectable()
+export class EmployeeService{
+private _url="/assets/data/employees.json";
+constructor(private http:HttpClient){}
+getEmploye():Observable<IEmployee[]>{
+return this.http.get<IEmployee[]>(this._url).
+catch(this.errorHandler); //method as parameter into catch
+}
+errorHandler(error:HttpErrorResponse){
+return error.throw(error.message||"System Error");
+} }
+
+rendering error in the component ex: employee-list.component.ts
+@Component({
+selctor : 'employee-list',
+template :`<h2>Employee List</h2>
+<h3>{{errorMessage}}</h3>
+<ul *ngFor="let employee of employees">
+<li>{{employee.name}}</li>
+</ul>`,
+styles=[]
+})
+
+export class EmployeeListComponent{
+public employees=[];
+public errorMsg;
+constructor(private _employeeService:EmployeeService){}
+ngOnInit(){
+this._employeeService.getEmployee()
+	.subscribe(data=>this.employees=data,
+		error=>this.errorMsg=error);
+}
+}
+-----------------------------------------------------------
+Routing :
+---------
+Swithing between component or views is routing.
+
+ex:
+two buttons departements and employees
+on clicking on each button following corresponding url will be triggered from same view.
+localhost:4200/departments
+localhost:4200/emplist
+
+steps to implement router
+1. generating new application
+angular project folder>ng new routing-demo --routing
+2.generate departement list component and employee list component
+>cd routing-demo
+>ng g c dempartment-list -it -is
+(-it for inline template, -is for inline style)
+>ng g c employee-list -it -is
+3.configure the routes
+inside app-routing.module.ts
+import ...
+import {Routes,RouterModule} from "@angular/router";
+import {DepartmentListComponent} from "./department-list/department-list.component";
+import {EmployeeListComponent} from "./employee-list/employee-list.componenet";
+const routes: Routes = [{path:'departements', component:DepartementListComponent},
+{path:'employees', component:EmployeeListComponent}];
+
+@NgModule({
+imports: [RouterModule.forRoot(routes)],
+export: [RouterModule]
+})
+export class AppRoutingModule{}
+//to remove duplicate imports in app.module.ts
+export const routingComponents=[DepartmentCompoent,EmployeeListComponent]
+
+inside app.module.ts
+import ..
+import {AppRoutingModule,routingComponents} from './app-routing.module';
+import {AppComponent} from './app-component';
+@NgModule({
+declarations:[AppComponent,routingComponent],
+imports:[BrowserModule,AppRoutingModule],
+providers:[],..
+})
+
+4.add buttons and use directives to navigate.
+
+inside App.component.html
+<h1>Routing and Navigation</h1>
+<nav>
+<a routerLink="/departments" routerLinkActive="active">Departements</a>
+<a routerLink="/employees" routerLinkActive="active">Employees</a>
+</nav>
+<router-outlet></router-outlet> //this will help us to route the views
+//ensure the urls http://localhost:4200/departments 
+//and http://localhost:4200/employees are working.
+<!--routed vies goes here-->
+
+inside style.css
+nav.a.active{color:#039be5;}
+============================================================
+Wildcard Route and Redirecting routes :
+
+If the user trying to configure the route that is not aviable.
+then we have to show message : Page Not found
+
+create page-notfound-component
+>ng g c page-notfound-component -it -is
+
+in side app-routing.module.ts configure wild card route as a last route.
+.....
+import [PageNotFoundComponent] from './page-notfound/page-notfound.component';
+
+const routes: Routes=[{path:"ex1",component:Ex1.component},
+{path:"ex2",component:Ex2.component},
+{path:"**",component:PageNotFoundComponent}];//always at at last in list. 
+poblem of above solution is for http://localhost:4200 it redirects to pagenotfoundcomponent. inthis case, usually we have to redirect to default page when it loads empty path. for example, we want to make default routing is ex2  then,
+
+const routes: Routes=[{path:"", redirectTo:"/ex2", pathMatch:"full"},{path:"ex1",component:Ex1.component},
+{path:"ex2",component:Ex2.component},
+{path:"**",component:PageNotFoundComponent}];
+
+pathMatch has two values 1. prefix - empty string founds(all url ends with empty, so dont use) 2. full - checks full empty string.
+================================================================
+Route Parameters
+----------------
+							
